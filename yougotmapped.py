@@ -12,10 +12,10 @@ def check_dependencies():
     for pkg in required:
         spec = importlib.util.find_spec(pkg)
         if spec is not None:
-            print(f"   [\u2713] {pkg} found")
+            print(f"   \u2611 {pkg} found — nice!")
         else:
-            print(f"   [X] {pkg} MISSING! Please install it.")
-            print("\n[!] Script cannot run until missing packages are installed.")
+            print(f"   \u2612 {pkg} MISSING! Please install it (pip install {pkg})")
+            print("\n\u26A0 Script cannot run until missing packages are installed.")
             sys.exit(1)
 
 
@@ -122,7 +122,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-###### map: chuckled my way through console logs 
+
 
 
 
