@@ -25,7 +25,7 @@ def get_public_ip():
         response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
-        print(f"[!] Error fetching public IP: {e}")
+        print(f"\u26A0 Error fetching public IP: {e}")
         return None
 
 
