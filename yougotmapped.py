@@ -94,15 +94,15 @@ def main():
 
     if data:
         print("\n\U0001F4CC Geolocation Info:")
-        print(f"IP Address: {data.get('ip', 'N/A')}")
-        print(f"Hostname: {data.get('hostname', 'N/A')}")
-        print(f"City: {data.get('city', 'N/A')}")
-        print(f"Region: {data.get('region', 'N/A')}")
-        print(f"Country: {data.get('country', 'N/A')}")
-        print(f"Location: {data.get('loc', 'N/A')}")
-        print(f"Organization: {data.get('org', 'N/A')}")
-        print(f"Postal Code: {data.get('postal', 'N/A')}")
-        print(f"Timezone: {data.get('timezone', 'N/A')}")
+        print(f"IP Address: {data.get('ip', 'N/A')} — ✈️ Incoming signal!")
+        print(f"Hostname: {data.get('hostname', 'N/A')} — \U0001F3E0 Probably lives here")
+        print(f"City: {data.get('city', 'N/A')} — \U0001F306 Urban legend?")
+        print(f"Region: {data.get('region', 'N/A')} — \U0001F5FA Somewhere in the wild")
+        print(f"Country: {data.get('country', 'N/A')} — \U0001F1FA\U0001F1F8 Passport required")
+        print(f"Location: {data.get('loc', 'N/A')} — \U0001F30D Pinned on Earth")
+        print(f"Organization: {data.get('org', 'N/A')} — \U0001F4BC Powered by suits")
+        print(f"Postal Code: {data.get('postal', 'N/A')} — \U0001F4EC Just mail it")
+        print(f"Timezone: {data.get('timezone', 'N/A')} — ⏰ Time travelers, take note")
 
         plot_ip_location(data)
 
