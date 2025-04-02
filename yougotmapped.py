@@ -37,7 +37,7 @@ def get_geolocation(ip_or_domain, api_token):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"[x] Error fetching geolocation data: {e}")
+        print(f"\U0001F4E1 Error fetching geolocation data: {e}")
         return None
 
 
