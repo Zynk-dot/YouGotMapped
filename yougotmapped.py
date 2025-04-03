@@ -4,6 +4,7 @@ import folium
 import os
 import sys
 import importlib.util
+import subprocess
 
 
 def check_dependencies():
@@ -15,8 +16,18 @@ def check_dependencies():
             print(f"   \u2611 {pkg} found — solid!")
         else:
             print(f"   \u2612 {pkg} MISSING! Uh oh.")
-            print("\n\u26a0 Script cannot run without it. Install it with pip and pretend this never happened.")
-            sys.exit(1)
+            choice = input(f"   \U0001F4A1 Wanna install '{pkg}' now? (yes/no): ").strip().lower()
+            if choice in ['yes', 'y']:
+                print(f"   \U0001F6E0 Installing '{pkg}'... brace yourself.")
+                try:
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
+                    print(f"   \u2705 '{pkg}' installed like a charm!")
+                except subprocess.CalledProcessError:
+                    print(f"   \u274C Failed to install '{pkg}'. Manual install might be needed. Sorry!")
+                    sys.exit(1)
+            else:
+                print(f"   \u26a0 Can't proceed without '{pkg}'. Exiting gracefully like a polite script.")
+                sys.exit(1)
 
 
 def get_public_ip():
@@ -69,13 +80,7 @@ def plot_ip_location(ip_data):
 
 def main():
     check_dependencies()
-    API_TOKEN = os.environ.get("IPINFO_TOKEN")  # Psst... you’ll need a (totally free) API token to unlock internet secrets: https://ipinfo.io/signup
-    # Having trubble putting the token in?
-    # 1. Go to https://ipinfo.io/signup — it’s free, I promise.
-    # 2. Get your token, looks like: e4xcke5hgus92d (but not this one!)
-    # 3. Open your terminal and type:
-    #   export IPINFO_TOKEN=your_real_token_here
-    # 4. Then run this script again like a boss.
+    API_TOKEN = os.environ.get("IPINFO_TOKEN")
     if not API_TOKEN:
         print("\u26a0 Missing API token. Set the 'IPINFO_TOKEN' environment variable. (We're not made of tokens, okay?)")
         return
