@@ -80,7 +80,13 @@ def plot_ip_location(ip_data):
 
 def main():
     check_dependencies()
-    API_TOKEN = os.environ.get("IPINFO_TOKEN")
+    API_TOKEN = os.environ.get("IPINFO_TOKEN")  # Psst... you’ll need a (totally free) API token to unlock internet secrets: https://ipinfo.io/signup
+    # Having trubble putting the token in?
+    # 1. Go to https://ipinfo.io/signup — it’s free, I promise.
+    # 2. Get your token, looks like: e4xcke5hgus92d (but not this one!)
+    # 3. Open your terminal and type:
+    #   export IPINFO_TOKEN=your_real_token_here
+    # 4. Then run this script again like a boss.
     if not API_TOKEN:
         print("\u26a0 Missing API token. Set the 'IPINFO_TOKEN' environment variable. (We're not made of tokens, okay?)")
         return
