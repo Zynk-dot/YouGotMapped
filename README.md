@@ -27,7 +27,7 @@ Or maybe you're just nosy (respect). Either way — this script's for you.
 ## 🛠️ Requirements
 
 - Python 3.7+
-- Packages: `requests`, `folium` (or let the script install it for you!)
+- Packages: `requests`, `folium`, ... (or let the script install it for you!)
 - A totally-free `IPINFO_TOKEN` (get it [here](https://ipinfo.io/signup))
 
 ---
