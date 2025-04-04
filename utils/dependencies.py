@@ -10,7 +10,8 @@ def check_dependencies():
         "ipaddress",
         "folium",
         "socket",
-        "argparse"
+        "argparse",
+        "ping3"
     ]
     print("\nChecking dependencies:")
     for pkg in required:
