@@ -5,7 +5,13 @@ import sys
 
 
 def check_dependencies():
-    required = ["requests", "ipaddress", "folium"]
+    required = [
+        "requests",
+        "ipaddress",
+        "folium",
+        "socket",
+        "argparse"
+    ]
     print("\nChecking dependencies:")
     for pkg in required:
         spec = importlib.util.find_spec(pkg)
@@ -13,6 +19,9 @@ def check_dependencies():
             print(f"   [OK] {pkg} found")
         else:
             print(f"   [MISSING] {pkg} not found")
+            if pkg in ["socket", "argparse", "ipaddress"]:
+                print(f"   Note: '{pkg}' is part of the Python standard library and should not be missing.")
+                continue
             choice = input(f"   Install '{pkg}' now? (yes/no): ").strip().lower()
             if choice in ['yes', 'y']:
                 try:
