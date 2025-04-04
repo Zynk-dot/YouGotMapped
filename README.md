@@ -20,6 +20,7 @@ Or maybe you're just nosy (respect). Either way — this script's for you.
 - 🗺️ Generates a **live HTML map** with red circle vibes
 - 📦 Dependency check? Yup — it acts like a cool installer
 - 🤖 Quietly avoids private IPs (don’t be that guy)
+- 🧰 Clean, modular CLI with argparse support
 
 ---
 
@@ -35,11 +36,13 @@ Or maybe you're just nosy (respect). Either way — this script's for you.
 
 ```bash
 # Clone the repo
-$ git clone https://github.com/Zynk-dot/YouGotMapped.git
-$ cd YouGotMapped
+git clone https://github.com/Zynk-dot/YouGotMapped.git
+cd YouGotMapped
 
-# Add your IPINFO token (do it, don’t skip it)
-$ export IPINFO_TOKEN=your_super_secret_token
+# Option 1: Set token temporarily
+export IPINFO_TOKEN=your_ipinfo_token
+
+# Option 2: Let the script prompt you and save it to .env
 
 # Run the thing
 $ python3 yougotmapped.py
