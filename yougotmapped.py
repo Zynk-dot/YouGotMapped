@@ -9,14 +9,16 @@ from utils.mapping import plot_ip_location, plot_multiple_ip_locations
 from utils.token import get_api_token
 from utils.ping import ping_target
 from utils.trace import run_traceroute
+from utils.anonymity import detect_anonymity, format_anonymity_result
 
 
 def main():
     parser = argparse.ArgumentParser(description="Geolocate one or more IPs/domains and generate an interactive map.")
-    parser.add_argument('--ip', nargs='*', help="One or more IPs/domains separated by space")
-    parser.add_argument('--file', type=str, help="Path to a file containing IPs/domains (one per line)")
-    parser.add_argument('--ping', action='store_true', help="Ping each IP or domain and show latency")
-    parser.add_argument('--trace', action='store_true', help="Show traceroute to each IP or domain")
+    parser.add_argument('-i', '--ip', nargs='*', help="One or more IPs/domains separated by space")
+    parser.add_argument('-f', '--file', type=str, help="Path to a file containing IPs/domains (one per line)")
+    parser.add_argument('-p', '--ping', action='store_true', help="Ping each IP or domain and show latency")
+    parser.add_argument('-t', '--trace', action='store_true', help="Show traceroute to each IP or domain")
+    parser.add_argument('-c', '--hidecheck', action='store_true', help="Check if the IP is a Tor exit node or VPN")
     parser.add_argument('--no-map', action='store_true', help="Do not generate a map")
     parser.add_argument('--delete-map', action='store_true', help="Delete the map after generating")
     args = parser.parse_args()
@@ -78,6 +80,11 @@ def main():
                 print("\n[ TRACEROUTE RESULT ]")
                 trace_output = run_traceroute(target)
                 print(trace_output)
+            
+            if args.hidecheck:  
+                print("\n[ ANONYMITY CHECK ]")
+                result = detect_anonymity(data)  
+                format_anonymity_result(result)  
 
             print("---")
         else:
