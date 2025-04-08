@@ -3,6 +3,8 @@ import os
 import sys
 import argparse
 import ipaddress
+from datetime import datetime
+
 from utils.dependencies import check_dependencies
 from utils.network import get_public_ip, get_geolocation, resolve_domain_to_ip
 from utils.mapping import plot_ip_location, plot_multiple_ip_locations
@@ -10,6 +12,7 @@ from utils.token import get_api_token
 from utils.ping import ping_target
 from utils.trace import run_traceroute
 from utils.anonymity import detect_anonymity, format_anonymity_result
+from utils.output import write_formatted_output
 
 
 def main():
@@ -19,6 +22,7 @@ def main():
     parser.add_argument('-p', '--ping', action='store_true', help="Ping each IP or domain and show latency")
     parser.add_argument('-t', '--trace', action='store_true', help="Show traceroute to each IP or domain")
     parser.add_argument('-c', '--hidecheck', action='store_true', help="Check if the IP is a Tor exit node or VPN")
+    parser.add_argument('-o', '--output', type=str, help="Specify output file or use format shorthand (e.g., f:csv, f:json, f:normal)")
     parser.add_argument('--no-map', action='store_true', help="Do not generate a map")
     parser.add_argument('--delete-map', action='store_true', help="Delete the map after generating")
     args = parser.parse_args()
@@ -50,9 +54,11 @@ def main():
             return
         targets = [ip_or_domain]
 
-    geolocated = []
+    geolocated = []  
+    full_results = [] 
 
     for target in targets:
+        target_result = {}
         try:
             ipaddress.ip_address(target)
             ip_or_domain = target
@@ -68,27 +74,34 @@ def main():
         data = get_geolocation(ip_or_domain, API_TOKEN)
         if data:
             geolocated.append(data)
+            target_result.update(data)
             print("---")
             for key in ['ip', 'hostname', 'city', 'region', 'country', 'loc', 'org', 'postal', 'timezone']:
                 print(f"{key.title()}: {data.get(key, 'N/A')}")
 
             if args.ping:
                 print("\n[ PING RESULT ]")
-                print(ping_target(target))
+                ping_result = ping_target(target)
+                print(ping_result)
+                target_result["ping"] = ping_result
 
             if args.trace:
                 print("\n[ TRACEROUTE RESULT ]")
                 trace_output = run_traceroute(target)
                 print(trace_output)
+                target_result["traceroute"] = trace_output
             
             if args.hidecheck:  
                 print("\n[ ANONYMITY CHECK ]")
-                result = detect_anonymity(data)  
-                format_anonymity_result(result)  
+                anonymity = detect_anonymity(data)
+                format_anonymity_result(anonymity)
+                target_result["anonymity"] = anonymity
 
             print("---")
+            full_results.append(target_result)
         else:
             print(f"Failed to get location data for {target}.")
+
 
     if not args.no_map:
         if len(geolocated) == 1:
@@ -122,6 +135,28 @@ def main():
             print("Map file not found.")
     elif geolocated:
         print("Map kept as 'ip_geolocation_map.html'.")
+
+    if args.output:
+        # Make sure the logs folder exists
+        os.makedirs("logs", exist_ok=True)
+
+        now = datetime.now()
+        date_str = now.strftime("%m-%d-%y")
+        time_str = now.strftime("%H-%M")
+
+        if args.output.startswith("f:"):
+            fmt_type = args.output[2:].lower()
+            ext = {"json": "json", "csv": "csv"}.get(fmt_type, "txt")
+            target_name = targets[0].replace(":", "-").replace("/", "-")
+            filename = f"{target_name}--{date_str}--{time_str}--YouGotMapped.{ext}"
+        else:
+            filename = args.output
+            fmt_type = filename.split('.')[-1].lower()
+            if fmt_type not in ["json", "csv", "txt"]:
+                fmt_type = "normal"
+
+        full_path = os.path.join("logs", filename)
+        write_formatted_output(full_results, full_path, fmt_type=fmt_type)
 
 
 if __name__ == "__main__":
