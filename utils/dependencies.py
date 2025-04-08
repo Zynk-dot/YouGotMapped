@@ -5,33 +5,29 @@ import sys
 
 
 def check_dependencies():
-    required = [
-        "requests",
-        "ipaddress",
-        "folium",
-        "socket",
-        "argparse",
-        "ping3",
-        "geoip2"
-    ]
-    print("\nChecking dependencies:")
-    for pkg in required:
-        spec = importlib.util.find_spec(pkg)
+    required = {
+        "requests": "requests",
+        "folium": "folium",
+        "ping3": "ping3",
+        "python-dotenv": "dotenv"
+    }
+
+    print("\nChecking dependencies:\n")
+
+    for package_name, module_name in required.items():
+        spec = importlib.util.find_spec(module_name)
         if spec is not None:
-            print(f"   [OK] {pkg} found")
+            print(f"   [OK] {package_name} found")
         else:
-            print(f"   [MISSING] {pkg} not found")
-            if pkg in ["socket", "argparse", "ipaddress"]:
-                print(f"   Note: '{pkg}' is part of the Python standard library and should not be missing.")
-                continue
-            choice = input(f"   Install '{pkg}' now? (yes/no): ").strip().lower()
+            print(f"   [MISSING] {package_name} not found")
+            choice = input(f"   Install '{package_name}' now? (yes/no): ").strip().lower()
             if choice in ['yes', 'y']:
                 try:
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
-                    print(f"   '{pkg}' installed")
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+                    print(f"   '{package_name}' successfully installed\n")
                 except subprocess.CalledProcessError:
-                    print(f"   Failed to install '{pkg}'.")
+                    print(f"    Failed to install '{package_name}'. Please install manually.")
                     sys.exit(1)
             else:
-                print(f"   Cannot continue without '{pkg}'. Exiting.")
+                print(f"   Cannot continue without '{package_name}'. Exiting.")
                 sys.exit(1)
