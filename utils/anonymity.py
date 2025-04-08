@@ -4,7 +4,6 @@ import socket
 
 TOR_EXIT_LIST = "https://check.torproject.org/torbulkexitlist"
 
-# Known strings that commonly appear in VPN or proxy providers
 VPN_KEYWORDS = [
     "vpn", "m247", "nord", "express", "ovh", "digitalocean", "linode",
     "datacamp", "host", "colo", "server", "vultr", "heficed", "leaseweb"

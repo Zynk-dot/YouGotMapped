@@ -1,3 +1,4 @@
+# utils/pings.py
 from ping3 import ping
 import statistics
 
