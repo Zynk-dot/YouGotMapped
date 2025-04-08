@@ -1,1 +1,0 @@
-This data folder is for local database!, well yes i thought maybe adding a few database for local will be great! give me some time to set it up! 
