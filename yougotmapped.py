@@ -1,9 +1,9 @@
-# yougotmapped.py
 import os
 import sys
 import argparse
 import ipaddress
 from datetime import datetime
+from pathlib import Path
 
 from utils.dependencies import check_dependencies
 from utils.network import get_public_ip, get_geolocation, resolve_domain_to_ip
@@ -91,7 +91,7 @@ def main():
                 print(trace_output)
                 target_result["traceroute"] = trace_output
             
-            if args.hidecheck:  
+            if args.hidecheck:
                 print("\n[ ANONYMITY CHECK ]")
                 anonymity = detect_anonymity(data)
                 format_anonymity_result(anonymity)
@@ -102,8 +102,12 @@ def main():
         else:
             print(f"Failed to get location data for {target}.")
 
+    # --- Output & Summary ---
+    map_saved = False
+    map_path = Path("ip_geolocation_map.html").resolve()
+    log_path = None
 
-    if not args.no_map:
+    if not args.no_map and geolocated:
         if len(geolocated) == 1:
             m = plot_ip_location(geolocated[0], color="red")
 
@@ -121,25 +125,22 @@ def main():
                             pass
                         break
             if m:
-                m.save('ip_geolocation_map.html')
-                print("Map saved as 'ip_geolocation_map.html'")
+                m.save(str(map_path))
+                map_saved = True
 
         elif len(geolocated) > 1:
             plot_multiple_ip_locations(geolocated)
+            map_saved = True
 
     if args.delete_map:
         try:
-            os.remove('ip_geolocation_map.html')
-            print("Deleted the map.")
+            os.remove(map_path)
+            map_saved = False
         except FileNotFoundError:
-            print("Map file not found.")
-    elif geolocated:
-        print("Map kept as 'ip_geolocation_map.html'.")
+            pass
 
     if args.output:
-        # Make sure the logs folder exists
         os.makedirs("logs", exist_ok=True)
-
         now = datetime.now()
         date_str = now.strftime("%m-%d-%y")
         time_str = now.strftime("%H-%M")
@@ -155,8 +156,19 @@ def main():
             if fmt_type not in ["json", "csv", "txt"]:
                 fmt_type = "normal"
 
-        full_path = os.path.join("logs", filename)
-        write_formatted_output(full_results, full_path, fmt_type=fmt_type)
+        log_path = Path("logs") / filename
+        write_formatted_output(full_results, str(log_path), fmt_type=fmt_type)
+        log_path = log_path.resolve()
+
+    # Final summary
+    if map_saved or log_path:
+        print("\n----- OUTPUT SUMMARY -----")
+        if map_saved:
+            print(f"Map Location: {map_path}")
+            print(f"Map URL: file://{map_path}")
+        if log_path:
+            print(f"Log File: {log_path}")
+            print(f"Log URL: file://{log_path}")
 
 
 if __name__ == "__main__":
